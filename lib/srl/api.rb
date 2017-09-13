@@ -61,6 +61,22 @@ module SRL
 
     # Return an array of PastRace objects for completed races.
     #
+    # You may filter the results by providing a `player` or `game`
+    # argument, to limit results to a specific player or game 
+    # abbreviation.
+    #
+    #   # To fetch only the six million LTTP Rando races.
+    #   completed_races(game: 'alttphacks') 
+    #
+    #   # To only retrieve Edgeworth's FF Randomizer races.
+    #   completed_races(player: 'Edgeworth', game: 'ffhacks') 
+    #
+    # Results are paginated at `page_size` records per page, 
+    # starting at 1. An upper limit to this number has not
+    # been tested, though I'd recommend that you not be a twat 
+    # and limit your requests to something that will not murder
+    # the server.
+    #
     # call-seq: current_races -> array
     def completed_races(args = {})
       res = query('pastraces', rewrite_args(args))

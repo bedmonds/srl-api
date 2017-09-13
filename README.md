@@ -43,3 +43,14 @@ will not.
 ## Maintainer
 
 Brian Edmonds "Artea" <[brian@bedmonds.net](mailto:brian@bedmonds.net)>
+
+## Disclaimer
+
+I am not affiliated in any way with SpeedRunsLive.com; I'm just a runner 
+and viewer that likes the convenience of CLI tools. I wrote this small
+library for myself and my tools, but thought other people might like to
+use it as well.
+
+Do try to not be a twat; servers and bandwidth cost money, so don't go 
+around writing a cron job that requests outrageous amounts of data every
+five seconds.
