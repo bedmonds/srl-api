@@ -39,26 +39,16 @@ begin
   # Will raise a NameError if the player is not found, 
   # exiting immediately.
   player = SRL.player(ARGV.pop) 
+  races  = []
 
-  races = []
-  curpage = 1
+  SRL.past_races({ player: player.name }) do |q|
+    q.each_page do |p|
+      races += p
+      break if p.any? { |i| i.date <= Date.today - 30 }
+    end
 
-  # Straightforward; keep querying further into the past
-  # so long as the target date hasn't been reached or there's
-  # nothing left to add.
-  loop do
-    res = SRL.past_races({ player: player.name, page: curpage })
-
-    break if res.records.empty?
-    
-    races += res.records
-    break if res.records.any? { |i| i.date <= Date.today - 30 }
-    break if res.last_page?
-
-    curpage += 1
+    races.reject! { |i| i.date <= Date.today - 30 }
   end
-
-  races.reject! { |i| i.date <= Date.today - 30 }
 
   races.group_by { |i| i.game.name }.each do |game, runs|
     times = runs.map(&:results)

@@ -11,6 +11,7 @@ require 'srl/unmarshalable'
 require 'srl/game'
 require 'srl/past_race'
 require 'srl/player'
+require 'srl/query'
 require 'srl/race'
 require 'srl/result_set'
 
@@ -77,15 +78,14 @@ module SRL
     # and limit your requests to something that will not murder
     # the server.
     #
-    # call-seq: current_races -> array
+    # call-seq: current_races -> obj
     def completed_races(args = {})
-      res = query('pastraces', rewrite_args(args))
-      ResultSet.new(
-        SRL::Utils.collection(res.fetch('pastraces'), PastRace),
-        count: res.fetch('count'),
-        page: args.fetch(:page, 1),
-        page_size: args.fetch(:pageSize, 25)
-      )
+      query =
+        Query.new('pastraces', PastRace, args.merge({ pkey: 'pastraces' })) 
+
+      return query.page unless block_given?
+
+      yield query
     end
     alias past_races completed_races
 
@@ -103,14 +103,9 @@ module SRL
       raise NetworkError, res unless res.is_a?(Net::HTTPSuccess)
 
       JSON.parse(res.body)
-    end
-
-    # Alias camelCase argument names to snake_case. :nodoc:
-    def rewrite_args(args)
-      { pageSize: args.fetch(:page_size, 25) }.merge(args)
-    end
-
+    end 
   end
+
   # Raised when an HTTP request to the SRL API server fails,
   # whether due to a malformed request or the server being down.
   #
