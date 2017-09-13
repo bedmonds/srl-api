@@ -1,0 +1,12 @@
+# Ignore dev-specific files 
+/doc
+/coverage
+
+# The usual suspects
+*.swp
+.DS_Store
+*.gem
+.ruby-version
+
+.gitconfig
+ChangeLog

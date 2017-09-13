@@ -1,0 +1,79 @@
+#!/usr/bin/env ruby
+
+# Prints the average times of a player for all
+# games that he ran in the last 30 days to STDOUT.
+
+if ARGV.empty? || ARGV[0] == '--help' || ARGV[0] == '-h'
+  puts "Usage: last-month-average <runner>\n\n"
+
+  puts "Prints a runner's average times per game during the last 30 days."
+  puts "An asterisk next to a time indicates that some races were forfeit."
+
+  puts "\nARGUMENTS"
+  puts "\trunner\tRegistered name on SpeedRunsLive.com, which is not\n" \
+       "\t\tnecessarily the same as the one used on IRC."
+
+  puts "\nEXIT CODES"
+  puts "\t3\tPlayer does not exist."
+  puts "\t4\tNetwork error. Unable to reach speedrunslive.com \n" \
+       "\t\tor the query was malformed."
+  exit 0
+end
+
+require 'srl'
+
+def average(times)
+  avg = times.inject(0.0) { |sum, i| sum += i } / times.size
+  h,m,s = [(avg / 3600).floor, ((avg / 60) % 60).floor, (avg % 60).floor]
+
+  out = []
+  out << "#{h}h" unless h.zero?
+  out << "#{m}m" unless m.zero?
+  out << "#{s}s" unless s.zero?
+
+  out.join(' ')
+end
+
+begin
+  # Ensures that the player exists before querying races.
+  # Will raise a NameError if the player is not found, 
+  # exiting immediately.
+  player = SRL.player(ARGV.pop) 
+
+  races = []
+  curpage = 1
+
+  # Straightforward; keep querying further into the past
+  # so long as the target date hasn't been reached or there's
+  # nothing left to add.
+  loop do
+    res = SRL.past_races({ player: player.name, page: curpage })
+
+    break if res.records.empty?
+    
+    races += res.records
+    break if res.records.any? { |i| i.date <= Date.today - 30 }
+    break if res.last_page?
+
+    curpage += 1
+  end
+
+  races.reject! { |i| i.date <= Date.today - 30 }
+
+  races.group_by { |i| i.game.name }.each do |game, runs|
+    times = runs.map(&:results)
+                .flatten
+                .select { |i| i.player == player.name }
+                .map(&:time)
+
+    ffs = (times.reject! { |i| i == -1 } || []).size
+
+    puts "#{average(times)}#{'*' if ffs.nonzero?}\t#{game}"
+  end
+rescue SRL::NetworkError => e
+  puts "Network error."
+  exit 4
+rescue NameError => e
+  puts e.message
+  exit 3
+end

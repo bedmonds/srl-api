@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+# Fetches a runner's stream and opens it in a video player.
+# I use vlc and streamlink works out of the box, YMMV.
+#
+# Requires streamlink, obviously. 
+
+require 'srl'
+
+system 'streamlink', SRL.player(ARGV.pop).stream, 'best'
