@@ -16,7 +16,7 @@ it to your program's Gemfile and running `bundle install`.
 `rdoc lib/` from the project root, or let RubyGems do it for you in $GEM_HOME.
 
 
-## Usage
+## Sample Usage
 
 Short version: 
 
@@ -30,6 +30,20 @@ of usable, real-world examples.
 Client code should focus on the `SRL` module, with its relevant functions 
 being found in `lib/srl/api.rb`.
 
+
+### One-liners
+
+Fetch a player's stream:
+
+    SRL.player('Foobar').stream
+
+Get the leaderboard for a particular game:
+
+    SRL.leaderboard('alttphacks') # => array
+
+Retrieve a game's total time played:
+
+    SRL.game('ffhacks').stats.total_time_played
 
 ## OS / Ruby Support
 
