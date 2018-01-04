@@ -41,6 +41,11 @@ module SRL
       @entrants = SRL::Utils.collection(arr, Entrant)
     end
 
+    attr_accessor :goal
+
+    attr_accessor :time
+    attr_accessor :numentrants
+
     # A participant in an active race.
     class Entrant
       include Unmarshalable

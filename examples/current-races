@@ -31,7 +31,7 @@ begin
   races = SRL.current_races
   races.delete_if { |i| i.game.abbreviation != ARGV[0] } unless ARGV.empty?
   puts races.map { |r|
-    "#{r.game.name}\t#srl-#{r.channel}\t#{r.status}"
+    "#{r.game.name}\t#srl-#{r.channel}\t#{r.status}\t#{r.goal}"
   }.join("\n")
 rescue SRL::NetworkError
   puts 'Could not query SpeedRunsLive.com'
