@@ -4,6 +4,12 @@ SpeedRunsLive Ruby Client
 Ruby library to retrieve data from SpeedRunsLive.com.
 
 
+## Notes
+
+I have moved all of my work over to GitLab; you can find this project's new home
+at https://gitlab.com/bedmonds/srl-api
+
+
 ## Installation
 
 The gem is hosted on RubyGems, so you can either install it 
